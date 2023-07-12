@@ -3,7 +3,7 @@ import bcrypt from "bcrypt"
 import nodemailer from "nodemailer"
 import { User, generateJwtToken} from "../userSchema/userSchema.js";
 import sendMail from "../middlewares/mail.js";
-
+import crypto from 'crypto'
 
 
 const router = express.Router();
@@ -81,7 +81,7 @@ router.post('/forgot/password', async (req, res) => {
       const resetToken = user.getResetToken();
       await user.save()
       //Create reset url
-      const resetUrl = ` http://localhost:3000/password/reset/${resetToken}`;
+      const resetUrl = ` http://localhost:3000/reset/password/${resetToken}`;
 
       const message = `Your password reset url is as follows \n\n 
       ${resetUrl} \n\n If you have not requested this email, then ignore it.`;
@@ -106,11 +106,12 @@ router.post('/forgot/password', async (req, res) => {
 
 // Route for password reset & updating the password
 router.post('/reset/password/:token', async (req, res) => {
-   
+  const resetPasswordToken = req.params.token
+  console.log(resetPasswordToken)
     try {
       // Find the user with the matching reset token
       const user = await User.findOne({
-        resetPasswordToken:req.params.token,
+        resetPasswordToken,
         resetPasswordTokenExpire: { $gt: Date.now() },
       });
   
