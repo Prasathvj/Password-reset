@@ -81,7 +81,7 @@ router.post('/forgot/password', async (req, res) => {
       const resetToken = user.getResetToken();
       await user.save()
       //Create reset url
-      const resetUrl = ` http://localhost:3000/reset/password/${resetToken}`;
+      const resetUrl = `https://users-password-reset.netlify.app/reset/password/${resetToken}`;
 
       const message = `Your password reset url is as follows \n\n 
       ${resetUrl} \n\n If you have not requested this email, then ignore it.`;
