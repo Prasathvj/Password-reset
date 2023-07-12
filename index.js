@@ -3,6 +3,7 @@ import { dbConnection} from "./db.js"
 import { userRouter } from "./routers/users.js"
 import bodyParser from "body-parser"
 import cors from "cors"
+import { isAuthendicated } from "./controllers/auth.js"
 
 //init the server
 const app =express()
@@ -16,7 +17,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 //routers
-app.use("/users", userRouter)
+app.use("/users",userRouter)
 
-//listening the server 
+//listening the server
 app.listen(9090, ()=>console.log("server running in localhost:9090"))

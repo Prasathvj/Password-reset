@@ -1,7 +1,8 @@
 import express from "express"
-import bcrypt, { genSalt } from "bcrypt"
+import bcrypt from "bcrypt"
 import nodemailer from "nodemailer"
 import { User, generateJwtToken} from "../userSchema/userSchema.js";
+import sendMail from "../controllers/mail.js";
 
 
 const router = express.Router();
@@ -80,32 +81,23 @@ router.post('/forgot-password', async (req, res) => {
       const resetToken = Math.random().toString(36).substring(7);
       user.resetToken = resetToken;
       user.resetTokenExpiration = Date.now() + 3600000; // Token expires in 1 hour
-  
+      //Create reset url
+      const resetUrl = ` http://localhost:3000/password/reset/${resetToken}`;
+
+      const message = `Your password reset url is as follows \n\n 
+      ${resetUrl} \n\n If you have not requested this email, then ignore it.`;
+
       // Save the reset token in the database
       await user.save();
-  
-      // Send the password reset link to the user's email
-      const transporter = nodemailer.createTransport({
-        // Configure your email provider here
-        service: 'gmail',
-        auth: {
-          user: 'prasathvj17@gmail.com',
-          pass: 'muwebjswafsbmjjq',
-        },
-      });
-      const mailOptions = {
-        from: 'prasathvj17@gmail.com',
-        to: user.email,
-        subject: 'Password Reset',
-        text: `Click on the following link to reset your password: http://localhost:9090/reset-password/${resetToken}`,
-      };
-      transporter.sendMail(mailOptions, (error) => {
-        if (error) {
-          console.error('Error sending email:', error);
-          return res.status(500).json({ error: 'Failed to send email' });
-        }
-        return res.status(200).json({ message: 'Email sent successfully' });
-      });
+      sendMail({ 
+        email: user.email,
+        subject: "Password Recovery",
+        message
+      })
+      res.status(200).json({
+        success: true,
+        message: `Email sent to ${user.email}`
+    })
     } catch (error) {
       console.error('Error:', error);
       res.status(500).json({ error: 'Internal server error' });
