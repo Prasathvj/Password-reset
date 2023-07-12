@@ -106,7 +106,7 @@ router.post('/forgot/password', async (req, res) => {
 
 // Route for password reset & updating the password
 router.post('/reset/password/:token', async (req, res) => {
-  const resetPasswordToken = req.params.token
+  const resetPasswordToken =  crypto.createHash('sha256').update(req.params.token).digest('hex'); 
   console.log(resetPasswordToken)
     try {
       // Find the user with the matching reset token
