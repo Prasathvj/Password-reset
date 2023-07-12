@@ -3,7 +3,7 @@ import { dbConnection} from "./db.js"
 import { userRouter } from "./routers/users.js"
 import bodyParser from "body-parser"
 import cors from "cors"
-import { isAuthendicated } from "./controllers/auth.js"
+import { isAuthendicated } from "./middlewares/auth.js"
 
 //init the server
 const app =express()
