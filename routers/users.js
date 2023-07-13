@@ -21,7 +21,7 @@ router.post("/signup",async(req, res)=>{
                 name : req.body.name,
                 email : req.body.email,
                 password : hashedPassword  
-            }).save()
+            }).save()  
 
             const token = generateJwtToken(user._id)
             res.status(200).json({ 
@@ -120,7 +120,7 @@ router.post('/reset/password/:token', async (req, res) => {
       }
       
       if( req.body.password !== req.body.confirmPassword) {
-        return next(new ErrorHandler('Password does not match'));
+        return res.status(404).json({ error: 'Password does not match' });
       }
       // Hash the new password
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
